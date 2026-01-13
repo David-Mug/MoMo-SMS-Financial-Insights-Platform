@@ -1,4 +1,4 @@
-# MoMo-SMS-Transaction-Dashboard
+# MoMo-SMS-Financial-Insights-Platform
 
 ## Team Name
 Team 7
