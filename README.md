@@ -19,11 +19,11 @@ and Agile team collaboration.
 
 ## High-Level Architecture
  Architecture Diagram:
- -
+ -https://drive.google.com/file/d/1goYUlZVnnQKxRoBbOAGn26IHWoS1l4j5/view?usp=sharing
 
 ## Scrum Board
  Project Board:
- -
+ - https://trello.com/b/vEybE1aY/momo-transaction-analytics-scrum-board?completedInviteSignup=1
 
 ## Tech Stack
 - Backend: Python (ElementTree / lxml)
