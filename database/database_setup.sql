@@ -74,3 +74,43 @@ CREATE TABLE system_logs (
     INDEX idx_category_log (category_id) COMMENT 'Index for category-related logs'
 ) 
 COMMENT='System logging table for auditing and tracking data processing events';
+INSERT INTO user (user_phone_number, user_name) VALUES
+('*********567', 'John Mukasa'),
+('*********667', 'Sarah Nakato'),
+('*********157', 'Peter Ochieng'),
+('*********560', 'Mary Achieng'),
+('*********123', 'David Okello');
+
+INSERT INTO transaction_categories (category_type) VALUES
+('Money Transfer'),
+('Airtime Purchase'),
+('Bill Payment'),
+('Cash Withdrawal'),
+('Cash Deposit');
+
+
+-- Insert sample user-category associations
+INSERT INTO user_categories (user_id, category_id) VALUES
+(1, 1),  -- John uses Money Transfer
+(1, 2),  -- John uses Airtime Purchase
+(2, 1),  -- Sarah uses Money Transfer
+(2, 3),  -- Sarah uses Bill Payment
+(3, 1);  -- Peter uses Money Transfer;
+
+-- Insert sample transactions
+INSERT INTO transactions (sender_id, receiver_id, amount, category_id, transaction_time) VALUES
+(1, 2, 50000.00, 1, '2025-01-15 10:30:00'),
+(2, 3, 25000.00, 1, '2025-01-15 14:20:00'),
+(3, 4, 10000.00, 1, '2025-01-16 09:15:00'),
+(4, 5, 15000.00, 2, '2025-01-16 11:45:00'),
+(5, 1, 30000.00, 1, '2025-01-17 08:30:00');
+
+-- Insert sample system logs
+INSERT INTO system_logs (action, timestamp, transaction_id, category_id) VALUES
+('Transaction Processed', '2025-01-15 10:30:05', 1, 1),
+('Transaction Processed', '2025-01-15 14:20:03', 2, 1),
+('Transaction Processed', '2025-01-16 09:15:08', 3, 1),
+('Airtime Purchase', '2025-01-16 11:45:12', 4, 2),
+('Transaction Processed', '2025-01-17 08:30:15', 5, 1);
+
+
