@@ -496,3 +496,13 @@ WHERE sender_id = 1 OR receiver_id = 1;
 
 ---
 
+
+## Summary
+
+This documentation provides a complete reference for all JSON schema entities used throughout the Momo system, including:
+- **Simple entities** with direct database mappings
+- **Nested structures** that combine related data
+- **Complex responses** with full denormalization for specific use cases
+- **API endpoints** with their respective data formats and SQL queries
+
+Each schema includes detailed information about data types, mapping strategies, and the underlying SQL queries used to construct the JSON responses.
