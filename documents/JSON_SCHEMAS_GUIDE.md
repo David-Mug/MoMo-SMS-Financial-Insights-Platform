@@ -348,3 +348,151 @@ WHERE t.transaction_id = 1;
 
 
 
+## API Response Examples
+
+### 8. Transaction List Response
+**Use Case:** `GET /api/transactions` - Retrieve multiple transactions
+
+#### Data Structure:
+```json
+{
+  "status": "success",
+  "count": 3,
+  "page": 1,
+  "total_pages": 1,
+  "transactions": [
+    {
+      "transaction_id": 1,
+      "amount": 50000.00,
+      "transaction_time": "2025-01-15T10:30:00Z",
+      "sender": {
+        "user_id": 1,
+        "user_name": "John Mukasa"
+      },
+      "receiver": {
+        "user_id": 2,
+        "user_name": "Sarah Nakato"
+      },
+      "category": {
+        "category_type": "Money Transfer"
+      }
+    },
+    {
+      "transaction_id": 2,
+      "amount": 25000.00,
+      "transaction_time": "2025-01-15T14:20:00Z",
+      "sender": {
+        "user_id": 2,
+        "user_name": "Sarah Nakato"
+      },
+      "receiver": {
+        "user_id": 3,
+        "user_name": "Peter Ochieng"
+      },
+      "category": {
+        "category_type": "Money Transfer"
+      }
+    },
+    {
+      "transaction_id": 3,
+      "amount": 10000.00,
+      "transaction_time": "2025-01-16T09:15:00Z",
+      "sender": {
+        "user_id": 3,
+        "user_name": "Peter Ochieng"
+      },
+      "receiver": {
+        "user_id": 4,
+        "user_name": "Mary Achieng"
+      },
+      "category": {
+        "category_type": "Money Transfer"
+      }
+    }
+  ]
+}
+```
+
+#### Features:
+- Wrapper object with metadata (`status`, `count`, `page`, `total_pages`)
+- Array of transaction objects
+- Partial nesting (user names included, but not full user objects)
+- Optimized for list views in mobile apps
+
+---
+
+### 9. User Transaction History Response
+**Use Case:** `GET /api/users/{user_id}/transactions` - Get all transactions for a specific user
+
+#### Data Structure:
+```json
+{
+  "status": "success",
+  "user": {
+    "user_id": 1,
+    "user_phone_number": "*********567",
+    "user_name": "John Mukasa"
+  },
+  "summary": {
+    "total_sent": 50000.00,
+    "total_received": 30000.00,
+    "net_balance_change": -20000.00,
+    "transaction_count": 2
+  },
+  "sent_transactions": [
+    {
+      "transaction_id": 1,
+      "receiver": {
+        "user_id": 2,
+        "user_name": "Sarah Nakato"
+      },
+      "amount": 50000.00,
+      "category": "Money Transfer",
+      "transaction_time": "2025-01-15T10:30:00Z"
+    }
+  ],
+  "received_transactions": [
+    {
+      "transaction_id": 5,
+      "sender": {
+        "user_id": 5,
+        "user_name": "David Okello"
+      },
+      "amount": 30000.00,
+      "category": "Money Transfer",
+      "transaction_time": "2025-01-17T08:30:00Z"
+    }
+  ]
+}
+```
+
+#### Features:
+- User details at top level
+- Computed summary statistics (totals, balance change, transaction count)
+- Transactions separated by direction (sent vs received)
+- Optimized for mobile wallet/history views
+
+#### SQL Queries Required:
+
+**Get sent transactions:**
+```sql
+SELECT * FROM transactions WHERE sender_id = 1;
+```
+
+**Get received transactions:**
+```sql
+SELECT * FROM transactions WHERE receiver_id = 1;
+```
+
+**Compute summary:**
+```sql
+SELECT 
+    SUM(CASE WHEN sender_id = 1 THEN amount ELSE 0 END) AS total_sent,
+    SUM(CASE WHEN receiver_id = 1 THEN amount ELSE 0 END) AS total_received,
+    COUNT(*) AS transaction_count
+FROM transactions 
+WHERE sender_id = 1 OR receiver_id = 1;
+```
+
+---
+
