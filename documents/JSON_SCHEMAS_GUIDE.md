@@ -247,3 +247,104 @@ WHERE t.transaction_id = 1;
 
 ---
 
+
+### 6. Transaction with Embedded Category
+**SQL Sources:** `transactions`, `transaction_categories` tables (JOIN)
+
+#### Data Structure:
+```json
+{
+  "transaction_id": 1,
+  "sender_id": 1,
+  "receiver_id": 2,
+  "amount": 50000.00,
+  "transaction_time": "2025-01-15T10:30:00Z",
+  "category": {
+    "category_id": 1,
+    "category_type": "Money Transfer"
+  }
+}
+```
+
+#### Nesting Strategy:
+- Base transaction data from `transactions` table
+- `category_id` replaced with nested category object
+- Reduces need for client to make additional API calls
+
+---
+
+## Complex Transaction Objects
+
+### 7. Complete Transaction with All Related Data
+**SQL Sources:** `transactions`, `user` (2x), `transaction_categories`, `system_logs` tables (multiple JOINs)
+
+#### Data Structure:
+```json
+{
+  "transaction_id": 1,
+  "amount": 50000.00,
+  "transaction_time": "2025-01-15T10:30:00Z",
+  "sender": {
+    "user_id": 1,
+    "user_phone_number": "*********567",
+    "user_name": "John Mukasa"
+  },
+  "receiver": {
+    "user_id": 2,
+    "user_phone_number": "*********667",
+    "user_name": "Sarah Nakato"
+  },
+  "category": {
+    "category_id": 1,
+    "category_type": "Money Transfer"
+  },
+  "logs": [
+    {
+      "log_id": 1,
+      "action": "Transaction Processed",
+      "timestamp": "2025-01-15T10:30:05Z"
+    }
+  ]
+}
+```
+
+#### Nesting Strategy:
+- `sender_id` replaced with complete sender object (JOIN with `user` table)
+- `receiver_id` replaced with complete receiver object (JOIN with `user` table)
+- `category_id` replaced with complete category object
+- `logs` array contains all system logs related to this transaction
+- Maximum denormalization for complete transaction view
+
+#### SQL Query:
+```sql
+SELECT 
+    t.transaction_id,
+    t.amount,
+    t.transaction_time,
+    -- Sender details
+    sender.user_id AS sender_id,
+    sender.user_phone_number AS sender_phone,
+    sender.user_name AS sender_name,
+    -- Receiver details
+    receiver.user_id AS receiver_id,
+    receiver.user_phone_number AS receiver_phone,
+    receiver.user_name AS receiver_name,
+    -- Category details
+    tc.category_id,
+    tc.category_type,
+    -- Log details
+    sl.log_id,
+    sl.action,
+    sl.timestamp AS log_timestamp
+FROM transactions t
+JOIN user sender ON t.sender_id = sender.user_id
+JOIN user receiver ON t.receiver_id = receiver.user_id
+JOIN transaction_categories tc ON t.category_id = tc.category_id
+LEFT JOIN system_logs sl ON t.transaction_id = sl.transaction_id
+WHERE t.transaction_id = 1;
+```
+
+---
+
+
+
