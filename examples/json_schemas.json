@@ -19,8 +19,17 @@
     "category_id": 1,
     "transaction_time": "2025-01-15T10:30:00Z"
   }, 
+    {
+  "_comment": "Activity log entry for a transaction",
+  "log_id": 1,
+  "action": "Transaction Processed",
+  "timestamp": "2025-01-15T10:30:05Z",
+  "transaction_id": 1,
+  "category_id": 1
+},
     
 ]
+
 
 
 
