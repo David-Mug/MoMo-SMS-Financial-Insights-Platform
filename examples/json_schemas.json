@@ -10,8 +10,18 @@
     "category_id": 1,
     "category_type": "Money Transfer"
   },
+    {
+    "_comment": "A simple transaction record",
+    "transaction_id": 1,
+    "sender_id": 1,
+    "receiver_id": 2,
+    "amount": 50000.00,
+    "category_id": 1,
+    "transaction_time": "2025-01-15T10:30:00Z"
+  }, 
     
 ]
+
 
 
 
