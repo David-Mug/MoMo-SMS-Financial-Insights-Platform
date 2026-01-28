@@ -43,7 +43,20 @@
     }
   ]
 }, 
+   {
+  "_comment": "Transaction that includes its category details inline",
+  "transaction_id": 1,
+  "sender_id": 1,
+  "receiver_id": 2,
+  "amount": 50000.00,
+  "transaction_time": "2025-01-15T10:30:00Z",
+  "category": {
+    "category_id": 1,
+    "category_type": "Money Transfer"
+  }
+}, 
 ]
+
 
 
 
