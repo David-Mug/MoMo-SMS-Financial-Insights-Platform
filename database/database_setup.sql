@@ -124,7 +124,8 @@ SELECT * FROM user WHERE user_name = 'John Mukasa';  -- Verify update
 -- Delete 
 DELETE FROM user WHERE user_name = 'David Okello'; 
 -- Should not work because of the restrictions set earlier to maintain data integrity
-SELECT * FROM user WHERE user_name = 'David Okello';  
+SELECT * FROM user WHERE user_name = 'KABANDA GISLAIN';  
+
 
 
 
