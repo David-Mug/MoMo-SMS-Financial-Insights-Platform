@@ -11,7 +11,7 @@ CREATE TABLE user (
     user_phone_number VARCHAR(20) COMMENT'Mobile phone number used for identification',
     user_name VARCHAR(50) COMMENT 'name of the user'
 )
-COMMENT='Stores user information for mobile money transactions';
+COMMENT='Stores the user information for mobile money transactions';
 
 -- Create Transactions table
 CREATE TABLE transaction_categories (
@@ -125,6 +125,7 @@ SELECT * FROM user WHERE user_name = 'John Mukasa';  -- Verify update
 DELETE FROM user WHERE user_name = 'David Okello'; 
 -- Should not work because of the restrictions set earlier to maintain data integrity
 SELECT * FROM user WHERE user_name = 'David Okello';  
+
 
 
 
