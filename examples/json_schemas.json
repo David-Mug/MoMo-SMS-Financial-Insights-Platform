@@ -139,8 +139,49 @@
       }
     ]
   },
-  
+   {
+    "_comment": "User's wallet history showing sent and received transactions with a summary",
+    "status": "success",
+    "user": {
+      "user_id": 1,
+      "user_phone_number": "*********567",
+      "user_name": "John Mukasa"
+    },
+    "summary": {
+      "total_sent": 50000.00,
+      "total_received": 30000.00,
+      "net_balance_change": -20000.00,
+      "transaction_count": 2
+    },
+    "sent_transactions": [
+      {
+        "transaction_id": 1,
+        "receiver": {
+          "user_id": 2,
+          "user_name": "Sarah Nakato"
+        },
+        "amount": 50000.00,
+        "category": "Money Transfer",
+        "transaction_time": "2025-01-15T10:30:00Z"
+      }
+    ],
+    "received_transactions": [
+      {
+        "transaction_id": 5,
+        "sender": {
+          "user_id": 5,
+          "user_name": "David Okello"
+        },
+        "amount": 30000.00,
+        "category": "Money Transfer",
+        "transaction_time": "2025-01-17T08:30:00Z"
+      }
+    ]
+  }
 ]
+
+]
+
 
 
 
