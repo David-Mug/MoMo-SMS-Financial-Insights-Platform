@@ -458,7 +458,7 @@ python api/app.py
 
 **Expected output:**
 ```
-✓ Loaded 1682 transactions
+ Loaded 1682 transactions
 
 ======================================================================
 REST API SERVER
@@ -495,12 +495,12 @@ Press Ctrl+C to stop
 ## Security Considerations
 
 ### Current Implementation (Development Only)
-- ✅ Basic Authentication implemented
-- ✅ 401 Unauthorized response on missing/invalid credentials
-- ❌ **NOT PRODUCTION READY** - credentials hardcoded and sent in Base64
-- ❌ No HTTPS/TLS encryption
-- ❌ No rate limiting
-- ❌ No input validation/sanitization
+-  Basic Authentication implemented
+-  401 Unauthorized response on missing/invalid credentials
+-  **NOT PRODUCTION READY** - credentials hardcoded and sent in Base64
+-  No HTTPS/TLS encryption
+-  No rate limiting
+-  No input validation/sanitization
 
 ### For Production Use
 - Use HTTPS/TLS encryption
@@ -517,7 +517,7 @@ Press Ctrl+C to stop
 ## Support
 
 For issues or questions, contact the development team:
-- Backend: Mugisha David
+- Backend: Mugisha David, Kabanda Gislain
 - API Lead: Mugisha David
 
-Last Updated: January 26, 2026
+Last Updated: February 02, 2026
