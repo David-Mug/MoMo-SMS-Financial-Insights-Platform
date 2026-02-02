@@ -60,7 +60,121 @@ class RequestHandler(BaseHTTPRequestHandler):
         except Exception as e:
             self._set_headers(500)
             self.wfile.write(json.dumps({"error": "Server error", "details": str(e)}).encode('utf-8'))
+    
+    # Handle POST requests to add new transactions
     def do_POST(self):
+        # Check if the URL is correct
+        if self.path != "/transactions":
+            self._set_headers(404)
+            self.wfile.write(json.dumps({"error": "Not found"}).encode('utf-8'))
+            return
+
+        try:
+            # Read the JSON body from the client
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length)
+            data = json.loads(body)
+
+            # Define the fields we allow
+            required_fields = ["transaction_type", "amount", "receiver",  "sender", "readable_date"]
+
+            # Check that required fields exist
+            for field in required_fields:
+                if field not in data:
+                    self._set_headers(400)
+                    self.wfile.write(json.dumps({"error": f"Missing field: {field}"}).encode('utf-8'))
+                    return
+
+            # Check data types
+            if not isinstance(data["amount"], (int, float)):
+                self._set_headers(400)
+                self.wfile.write(json.dumps({"error": "Amount must be a number"}).encode('utf-8'))
+                return
+
+            # Filter out unwanted fields
+            transaction_to_store = {key: data[key] for key in required_fields if key in data}
+
+            # Generate a new unique ID
+            if transactions:
+                new_id = max(t["id"] for t in transactions) + 1
+            else:
+                new_id = 1  # first transaction
+            transaction_to_store["id"] = new_id
+
+            # Append the transaction to the list
+            transactions.append(transaction_to_store)
+
+            # Respond to client
+            self._set_headers(201)  # Created
+            self.wfile.write(json.dumps(transaction_to_store).encode('utf-8'))
+
+        except json.JSONDecodeError:
+            # Invalid JSON from client
+            self._set_headers(400)
+            self.wfile.write(json.dumps({"error": "Invalid JSON format"}).encode('utf-8'))
+
+        except Exception as e:
+            # Catch all other errors
+            self._set_headers(500)
+            self.wfile.write(json.dumps({"error": "Internal Server Error", "details": str(e)}).encode('utf-8'))
+    
+    def do_PUT(self):
+        if not self.path.startswith("/transactions/"):
+            self._set_headers(404)
+            self.wfile.write(json.dumps({"error": "Not found"}).encode('utf-8'))
+            return
+
+        try:
+            txn_id = int(self.path.split("/")[-1])
+            txn = next((t for t in transactions if t["id"] == txn_id), None)
+            if not txn:
+                self._set_headers(404)
+                self.wfile.write(json.dumps({"error": "Transaction not found"}).encode('utf-8'))
+                return
+
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length)
+            updates = json.loads(body)
+
+            # Update only fields provided
+            for key, value in updates.items():
+                txn[key] = value
+
+            self._set_headers(200)
+            self.wfile.write(json.dumps(txn).encode('utf-8'))
+
+        except ValueError:
+            self._set_headers(400)
+            self.wfile.write(json.dumps({"error": "Invalid transaction ID"}).encode('utf-8'))
+        except Exception as e:
+            self._set_headers(500)
+            self.wfile.write(json.dumps({"error": "Internal Server Error", "details": str(e)}).encode('utf-8'))
+
+    # Handle DELETE requests according to the id provided.
+    def do_DELETE(self):
+        if not self.path.startswith("/transactions/"):
+            self._set_headers(404)
+            self.wfile.write(json.dumps({"error": "Not found"}).encode('utf-8'))
+            return
+
+        try:
+            txn_id = int(self.path.split("/")[-1])
+            index = next((i for i, t in enumerate(transactions) if t["id"] == txn_id), None)
+            if index is None:
+                self._set_headers(404)
+                self.wfile.write(json.dumps({"error": "Transaction not found"}).encode('utf-8'))
+                return
+
+            transactions.pop(index)
+            self._set_headers(204)  # No Content
+            self.wfile.write(b'')
+
+        except ValueError:
+            self._set_headers(400)
+            self.wfile.write(json.dumps({"error": "Invalid transaction ID"}).encode('utf-8'))
+        except Exception as e:
+            self._set_headers(500)
+            self.wfile.write(json.dumps({"error": "Internal Server Error", "details": str(e)}).encode('utf-8'))
 #Running the server
 def run(PORT=8000):
 
