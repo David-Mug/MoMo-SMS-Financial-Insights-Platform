@@ -1,57 +1,90 @@
-"""
-DSA Integration: Linear Search vs Dictionary Lookup Performance Comparison
+import time
+import random
+import os
+import sys
 
-This module compares two approaches to finding transactions by ID:
-    1. Linear Search - O(n) time complexity, iterate through list
-    2. Dictionary Lookup - O(1) time complexity, hash table access
+# Add the current directory to Python path so we can import modules
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
+
+from xml_parser import parse_xml
+
+
+# Search Algorithms
+
+def linear_search(transactions, target_id):
     """
-
-    import json
-    import time
-    import os
-
-
-    def load_transactions(json_file):
-            """Load transactions from JSON file"""
-                try:
-                            with open(json_file, 'r') as f:
-                                            return json.load(f)
-                                            except FileNotFoundError:
-                                                        print(f"✗ File not found: {json_file}")
-                                                                return []
-                                                                except json.JSONDecodeError:
-                                                                            print(f"✗ Invalid JSON: {json_file}")
-                                                                                    return []
+    Linear search through a list of transactions.
+    Time Complexity: O(n)
+    """
+    for trans in transactions:
+        if trans["id"] == target_id:
+            return trans
+    return None
 
 
-                                                                                def linear_search(transactions, target_id):
-                                                                                        """
-                                                                                            Linear Search - O(n) complexity
-                                                                                                Iterate through list sequentially until target is found
-                                                                                                    """
-                                                                                                        for tx in transactions:
-                                                                                                                    if tx['id'] == target_id:
-                                                                                                                                    return tx
-                                                                                                                                    return None
+def build_transaction_dict(transactions):
+    """
+    Build a dictionary mapping id -> transaction.
+    Time Complexity: O(n)
+    """
+    return {trans["id"]: trans for trans in transactions}
 
 
-                                                                                                                                def dictionary_lookup(transactions_dict, target_id):
-                                                                                                                                        """
-                                                                                                                                            Dictionary Lookup - O(1) complexity
-                                                                                                                                                Direct hash table access using transaction ID as key
-                                                                                                                                                    """
-                                                                                                                                                        return transactions_dict.get(target_id)
+def dict_lookup(trans_dict, target_id):
+    """
+    Dictionary lookup using transaction ID as key.
+    Time Complexity: O(1) average case
+    """
+    return trans_dict.get(target_id)
 
 
-                                                                                                                                                    def create_transaction_dict(transactions):
-                                                                                                                                                            """Convert list to dictionary for O(1) lookup"""
-                                                                                                                                                                return {tx['id']: tx for tx in transactions}
+# Performance Testing
+
+def compare_search_performance(transactions, runs=5):
+    """
+    Compare linear search vs dictionary lookup.
+    """
+    # Make sure we have at least 20 records to test with
+    if len(transactions) < 20:
+        transactions = transactions * (20 // len(transactions) + 1)
+
+    # Select a random transaction ID to search for
+    target_id = random.choice(transactions)["id"]
+
+    # Measure linear search performance
+    linear_times = []
+    for _ in range(runs):
+        start = time.perf_counter()
+        linear_search(transactions, target_id)
+        linear_times.append(time.perf_counter() - start)
+
+    avg_linear_time = sum(linear_times) / runs
+
+    # Measure dictionary lookup performance
+    trans_dict = build_transaction_dict(transactions)
+
+    dict_times = []
+    for _ in range(runs):
+        start = time.perf_counter()
+        dict_lookup(trans_dict, target_id)
+        dict_times.append(time.perf_counter() - start)
+
+    avg_dict_time = sum(dict_times) / runs
+
+    return avg_linear_time, avg_dict_time
 
 
-                                                                                                                                                            def benchmark_search(transactions, test_ids, num_iterations=100):
-                                                                                                                                                                    """
-                                                                                                                                                                        Benchmark both search methods
-                                                                                                                                                                            """
-                                                                                                                                                                                print("\n" + "="*80)
-                                                                                                                                                                                    print("DSA INTEGRATION: SEARCH ALGORITHM COMPARISON")
-                                                                                                                                                                                        print("="*80)
+# Run performance comparison when this file is executed directly
+
+if __name__ == "__main__":
+    xml_path = os.path.join(BASE_DIR, "modified_sms_V2.xml")
+    transactions = parse_xml(xml_path)
+
+    linear_time, dict_time = compare_search_performance(transactions)
+
+    print("DSA SEARCH PERFORMANCE COMPARISON")
+    print("--------------------------------")
+    print(f"Number of transactions tested: {len(transactions)}")
+    print(f"Average Linear Search Time: {linear_time:.8f} seconds")
+    print(f"Average Dictionary Lookup Time: {dict_time:.8f} seconds")
